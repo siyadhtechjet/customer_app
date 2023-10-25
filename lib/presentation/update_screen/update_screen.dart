@@ -5,20 +5,34 @@ import 'package:customer_app/presentation/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class InputScreen extends StatelessWidget {
-  InputScreen({Key? key}) : super(key: key);
+class UpdateScreen extends StatelessWidget {
+  final String mobileNumber;
+  final String dataName;
+  final String dataAddress;
+  final String dataRequirment;
+  final String dataIndustry;
+  UpdateScreen({
+    super.key,
+    required this.mobileNumber,
+    required this.dataName,
+    required this.dataAddress,
+    required this.dataRequirment,
+    required this.dataIndustry,
+  });
 
-  final TextEditingController mobileNumber = TextEditingController();
   final TextEditingController address = TextEditingController();
   final TextEditingController industry = TextEditingController();
   final TextEditingController remark = TextEditingController();
-  final TextEditingController visitedTime = TextEditingController();
   final TextEditingController name = TextEditingController();
   final TextEditingController requirment = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    address.text=dataAddress;
+    name.text=dataName;
+    industry.text=dataIndustry;
+    requirment.text=dataRequirment;
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -31,20 +45,17 @@ class InputScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     TextFieldWidget(
-                      controller: mobileNumber,
-                      content: 'Mobile Number',
+                      controller: address,
+                      content: 'Address',
                       validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.length > 10 ||
-                            value.length < 10) {
-                          return 'Please enter Mobile Number with 10 numbers';
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Address';
                         }
                         return null;
                       },
                     ),
                     const SpaceBetween(),
-                     TextFieldWidget(
+                    TextFieldWidget(
                       controller: name,
                       content: 'Name',
                       validator: (value) {
@@ -55,23 +66,12 @@ class InputScreen extends StatelessWidget {
                       },
                     ),
                     const SpaceBetween(),
-                     TextFieldWidget(
+                    TextFieldWidget(
                       controller: requirment,
                       content: 'Requirment',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your requirment';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SpaceBetween(),
-                    TextFieldWidget(
-                      controller: address,
-                      content: 'Address',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Address';
                         }
                         return null;
                       },
@@ -88,34 +88,21 @@ class InputScreen extends StatelessWidget {
                       },
                     ),
                     const SpaceBetween(),
-                    TextFieldWidget(
-                      controller: remark,
-                      content: 'Remark',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Remark';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SpaceBetween(),
                     SizedBox(
                         width: double.infinity,
                         child: StatusButton(
                             buttonFunction: () async {
                               if (_formKey.currentState!.validate()) {
-                                context.read<UserDataProvider>().addData(
-                                      address: address.text,
-                                      industry: industry.text,
-                                      name: name.text,
-                                      phoneNumber: mobileNumber.text,
-                                      remark: remark.text,
-                                      requirment: requirment.text
-                                    );
-                                    Navigator.pop(context);
+                                context.read<UserDataProvider>().updateData(
+                                    address.text,
+                                    industry.text,
+                                    mobileNumber,
+                                    name.text,
+                                    requirment.text);
+                                Navigator.pop(context);
                               }
                             },
-                            buttonName: 'Submit')),
+                            buttonName: 'update')),
                   ],
                 ),
               ),
@@ -126,4 +113,3 @@ class InputScreen extends StatelessWidget {
     );
   }
 }
-

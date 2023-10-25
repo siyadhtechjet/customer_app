@@ -5,6 +5,8 @@ class UserDataModel {
   String? industry;
   String? visitedTime;
   String? status;
+  String? name;
+  String? requirment;
 
   UserDataModel(
       {this.phoneNumber,
@@ -12,7 +14,9 @@ class UserDataModel {
       this.remark,
       this.industry,
       this.visitedTime,
-      this.status});
+      this.status,
+      this.name,
+      this.requirment});
 
   UserDataModel.fromJson(Map<String, dynamic> json) {
     phoneNumber = json['phone_number'];
@@ -21,6 +25,8 @@ class UserDataModel {
     industry = json['Industry'];
     visitedTime = json['visited_time'];
     status = json['status'];
+    name = json['name'];
+    requirment = json['requirment'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +37,8 @@ class UserDataModel {
     data['Industry'] = industry;
     data['visited_time'] = visitedTime;
     data['status'] = status;
+    data['name'] = name;
+    data['requirment'] = requirment;
     return data;
   }
 }

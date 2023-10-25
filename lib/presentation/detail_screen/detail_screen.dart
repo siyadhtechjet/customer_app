@@ -51,6 +51,14 @@ class DetailScreen extends StatelessWidget {
                               detail: data!.phoneNumber!,
                             ),
                             SingleDetailCard(
+                              dataTitle: 'Name:  ',
+                              detail: data.name!,
+                            ),
+                            SingleDetailCard(
+                              dataTitle: 'Requirment:  ',
+                              detail: data.requirment!,
+                            ),
+                            SingleDetailCard(
                               dataTitle: 'Address:  ',
                               detail: data.adress!,
                             ),
