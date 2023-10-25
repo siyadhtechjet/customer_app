@@ -20,16 +20,18 @@ class HomeScreen extends StatelessWidget {
               child: FutureBuilder<List<UserDataModel>>(
             future: value.getAllData(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                const Center(
+              if (snapshot.connectionState == ConnectionState.waiting && snapshot.data==null) {
+               return const Center(
                   child: CircularProgressIndicator(),
                 );
-              } else if (snapshot.data!.isEmpty) {
-                const Center(
+              }
+               else if (!snapshot.hasData) {
+               return const Center(
                   child: Text('Data empty'),
                 );
               }
-              return Padding(
+             else{
+               return Padding(
                 padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
@@ -118,7 +120,8 @@ class HomeScreen extends StatelessWidget {
                                     child: Text(indexnum.toString()),
                                   ),
                                   title:
-                                      Text(snapshot.data![index].phoneNumber!),
+                                      Text(snapshot.data![index].phoneNumber!,
+                                      style:const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),),
                                 ),
                               ),
                             ),
@@ -129,6 +132,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               );
+             }
             },
           )),
           floatingActionButton: FloatingActionButton(

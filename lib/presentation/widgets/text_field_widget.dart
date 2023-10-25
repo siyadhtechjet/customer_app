@@ -5,7 +5,7 @@ class TextFieldWidget extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.content,
-    required this.validator,
+    this.validator,
   }) : super(key: key);
 
   final TextEditingController controller;

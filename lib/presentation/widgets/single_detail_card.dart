@@ -25,7 +25,7 @@ class SingleDetailCard extends StatelessWidget {
                   child: Text(
                 detail,
                 style:
-                    const TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               )),
             ],
           ),

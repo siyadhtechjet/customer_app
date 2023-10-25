@@ -79,7 +79,7 @@ class UserDataProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateStatus(String phoneNumber, String status) async {
+  Future<void> updateStatus(String phoneNumber, String status,String updateRemark,String oldRemark) async {
     try {
       notifyListeners();
       CollectionReference usersCollection =
@@ -88,6 +88,7 @@ class UserDataProvider extends ChangeNotifier {
       await usersCollection.doc(phoneNumber).update({
         'visited_time': DateTime.now().toString(),
         'status': status,
+        'remark': updateRemark.isEmpty?oldRemark:updateRemark
       });
       notifyListeners();
     } catch (error) {

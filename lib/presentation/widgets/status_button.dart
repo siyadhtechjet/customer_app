@@ -16,7 +16,7 @@ class StatusButton extends StatelessWidget {
           onPressed: () {
             buttonFunction();
           },
-          child: Text(buttonName)),
+          child: Text(buttonName,style:const TextStyle(fontSize: 17),)),
     );
   }
 }

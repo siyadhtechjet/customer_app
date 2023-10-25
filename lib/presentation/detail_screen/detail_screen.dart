@@ -3,15 +3,19 @@ import 'package:customer_app/model/user_data.dart';
 import 'package:customer_app/presentation/widgets/single_detail_card.dart';
 import 'package:customer_app/presentation/widgets/space_between.dart';
 import 'package:customer_app/presentation/widgets/status_button.dart';
+import 'package:customer_app/presentation/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatelessWidget {
   final String phoneNumber;
-  const DetailScreen({super.key, required this.phoneNumber});
+  DetailScreen({super.key, required this.phoneNumber});
+
+  final TextEditingController updateRemark = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -22,17 +26,21 @@ class DetailScreen extends StatelessWidget {
             return FutureBuilder<UserDataModel?>(
                 future: value.getData(phoneNumber),
                 builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting &&
+                      snapshot.data == null) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (!snapshot.hasData) {
+                    return const Center(
+                      child: Text('Data empty'),
+                    );
+                  }
                   var data = snapshot.data;
                   DateTime now = DateTime.parse(snapshot.data!.visitedTime!);
                   String convertedDateTime =
                       "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}";
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return ListView(
                     children: [
                       SizedBox(
                         width: double.infinity,
@@ -60,9 +68,18 @@ class DetailScreen extends StatelessWidget {
                             SingleDetailCard(
                               dataTitle: 'Status:  ',
                               detail: data.status!,
-                            )
+                            ),
+                            const SpaceBetween(),
+                            const SpaceBetween(),
+                            TextFieldWidget(
+                              controller: updateRemark,
+                              content: 'Remark',
+                            ),
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.05,
                       ),
                       Column(
                         children: [
@@ -70,7 +87,9 @@ class DetailScreen extends StatelessWidget {
                             buttonFunction: () async {
                               await Provider.of<UserDataProvider>(context,
                                       listen: false)
-                                  .updateStatus(data.phoneNumber!, 'Deal');
+                                  .updateStatus(data.phoneNumber!, 'Deal',
+                                      updateRemark.text.trim(), data.remark!);
+                              updateRemark.clear();
                             },
                             buttonName: 'Deal',
                           ),
@@ -79,7 +98,9 @@ class DetailScreen extends StatelessWidget {
                             buttonFunction: () async {
                               await Provider.of<UserDataProvider>(context,
                                       listen: false)
-                                  .updateStatus(data.phoneNumber!, 'Follow up');
+                                  .updateStatus(data.phoneNumber!, 'Follow up',
+                                      updateRemark.text.trim(), data.remark!);
+                              updateRemark.clear();
                             },
                             buttonName: 'Follow up',
                           ),
@@ -89,7 +110,11 @@ class DetailScreen extends StatelessWidget {
                               await Provider.of<UserDataProvider>(context,
                                       listen: false)
                                   .updateStatus(
-                                      data.phoneNumber!, 'Not interested');
+                                      data.phoneNumber!,
+                                      'Not interested',
+                                      updateRemark.text.trim(),
+                                      data.remark!);
+                              updateRemark.clear();
                             },
                             buttonName: 'Not interested',
                           )
@@ -99,15 +124,8 @@ class DetailScreen extends StatelessWidget {
                   );
                 });
           },
-          // child:
         ),
       )),
     );
   }
 }
-
-
-
-
-
-
