@@ -23,15 +23,13 @@ class SearchScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: SearchBar(
                   trailing: [
-                    InkWell(
-                      onTap: () {
-                        searchController.clear();
-                      },
-                      child:const Icon(Icons.clear,color: Colors.grey,))
-                  ],
+                    IconButton(onPressed: () {
+                      searchController.clear();
+                    }, icon:const Icon(Icons.clear,color: Colors.grey,))
+                    ],
                   hintText: 'Search',
                   hintStyle: const MaterialStatePropertyAll(
-                      TextStyle(color: Colors.grey)),
+                      TextStyle(color: Colors.grey,fontSize: 16)),
                   controller: searchController,
                   onSubmitted: (value) =>
                       context.read<UserDataProvider>().filterItems(value),
@@ -45,70 +43,80 @@ class SearchScreen extends StatelessWidget {
                   return FutureBuilder<List<UserDataModel>>(
                     future: value.filterItems(searchController.text),
                     builder: (context, snapshot) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(top: 5),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          int indexnum = index + 1;
-                          var data = snapshot.data![index];
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: Card(
-                              child: Center(
-                                child: ListTile(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DetailScreen(
-                                              phoneNumber: snapshot
-                                                  .data![index].phoneNumber!),
-                                        ));
-                                  },
-                                  leading: CircleAvatar(
-                                    child: Text(indexnum.toString()),
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          snapshot.data == null) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (!snapshot.hasData) {
+                        return const Center(
+                          child: Text('Data empty'),
+                        );
+                      } else {
+                        return ListView.builder(
+                          padding: const EdgeInsets.all(15),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            int indexnum = index + 1;
+                            var data = snapshot.data![index];
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: Card(
+                                child: Center(
+                                  child: ListTile(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => DetailScreen(
+                                                phoneNumber: snapshot
+                                                    .data![index].phoneNumber!),
+                                          ));
+                                    },
+                                    leading: CircleAvatar(
+                                      child: Text(indexnum.toString()),
+                                    ),
+                                    title: Text(
+                                      data.name!,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18),
+                                    ),
+                                    subtitle: Text(
+                                      data.phoneNumber!,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14),
+                                    ),
+                                    trailing: IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    UpdateScreen(
+                                                        mobileNumber:
+                                                            data.phoneNumber!,
+                                                        dataAddress:
+                                                            data.adress!,
+                                                        dataIndustry:
+                                                            data.industry!,
+                                                        dataName: data.name!,
+                                                        dataRequirment:
+                                                            data.requirment!),
+                                              ));
+                                        },
+                                        icon: const Icon(Icons.edit)),
                                   ),
-                                  title: Text(
-                                    data.name!,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18),
-                                  ),
-                                  subtitle: Text(
-                                    data.phoneNumber!,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14),
-                                  ),
-                                  trailing: IconButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  UpdateScreen(
-                                                      mobileNumber:
-                                                          data.phoneNumber!,
-                                                      dataAddress: data.adress!,
-                                                      dataIndustry:
-                                                          data.industry!,
-                                                      dataName: data.name!,
-                                                      dataRequirment:
-                                                          data.requirment!),
-                                            ));
-                                      },
-                                      icon: const Icon(Icons.edit)),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      );
+                            );
+                          },
+                        );
+                      }
                     },
-                    // child:
                   );
                 },
-                // child:
               ),
             ),
           ],

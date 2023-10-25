@@ -143,7 +143,6 @@ class UserDataProvider extends ChangeNotifier {
   List<UserDataModel> filteredItems = [];
 
   Future<List<UserDataModel>> filterItems(String query) async {
-    filteredItems.clear();
     try {
       if (query.isEmpty) {
         filteredItems.clear();
